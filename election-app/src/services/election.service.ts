@@ -54,6 +54,11 @@ export class ElectionService {
       );
     }
 
+    // หมายเลขบนบัตรเลือกตั้งต้องเป็นจำนวนเต็มบวก (1, 2, 3, ...)
+    if (!Number.isInteger(data.candidateNumber) || data.candidateNumber < 1) {
+      throw new Error("หมายเลขผู้สมัครต้องเป็นจำนวนเต็มบวก");
+    }
+
     const user = await userRepo.findById(data.userId);
     if (!user) {
       throw new Error(`ไม่พบผู้ใช้ ID: ${data.userId}`);
@@ -615,8 +620,16 @@ export class ElectionService {
       throw new Error(`ไม่พบผู้สมัคร ID: ${candidateId}`);
     }
 
+    // หมายเลขบนบัตรเลือกตั้งต้องเป็นจำนวนเต็มบวก — เช็ก !== undefined เพราะ 0 เป็น falsy
+    if (
+      data.candidateNumber !== undefined &&
+      (!Number.isInteger(data.candidateNumber) || data.candidateNumber < 1)
+    ) {
+      throw new Error("หมายเลขผู้สมัครต้องเป็นจำนวนเต็มบวก");
+    }
+
     // ตรวจสอบว่าหมายเลขผู้สมัครไม่ซ้ำในเขต
-    if (data.candidateNumber && data.candidateNumber !== candidate.candidateNumber) {
+    if (data.candidateNumber !== undefined && data.candidateNumber !== candidate.candidateNumber) {
       const isUsed = await candidateRepo.isCandidateNumberUsed(
         candidate.constituencyId,
         data.candidateNumber,

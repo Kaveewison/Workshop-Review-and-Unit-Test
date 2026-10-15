@@ -162,7 +162,7 @@ describe('ElectionService.addCandidate', () => {
   });
 
   describe('bugs found by testing (it.failing = documents a bug in the original code)', () => {
-    it.failing.each([-1, 1.5])('rejects candidate number %p (must be a positive integer)', async (candidateNumber) => {
+    it.each([-1, 1.5])('rejects candidate number %p (must be a positive integer)', async (candidateNumber) => {
       const { create } = givenEverythingIsAvailable();
 
       await expect(service.addCandidate({ ...validInput, candidateNumber })).rejects.toThrow(

@@ -112,7 +112,7 @@ describe('ElectionService.updateCandidate', () => {
     });
 
     // `if (data.candidateNumber && ...)` skips every check for 0, and nothing checks -1 or 1.5.
-    it.failing.each([0, -1, 1.5])('rejects candidate number %p (must be a positive integer)', async (candidateNumber) => {
+    it.each([0, -1, 1.5])('rejects candidate number %p (must be a positive integer)', async (candidateNumber) => {
       const { update } = givenCandidate7();
 
       await expect(service.updateCandidate(7, { candidateNumber })).rejects.toThrow(
