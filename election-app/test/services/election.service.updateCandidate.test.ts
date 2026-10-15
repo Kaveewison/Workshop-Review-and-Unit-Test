@@ -77,6 +77,14 @@ describe('ElectionService.updateCandidate', () => {
     expect(update).not.toHaveBeenCalled();
   });
 
+  it('moves the candidate to a party that has nobody in the constituency yet', async () => {
+    const { update } = givenCandidate7();
+
+    await service.updateCandidate(7, { partyId: 20 });
+
+    expect(update).toHaveBeenCalledWith(7, expect.objectContaining({ partyId: 20 }));
+  });
+
   it('rejects a party that does not exist', async () => {
     const { update } = givenCandidate7();
 
@@ -99,7 +107,7 @@ describe('ElectionService.updateCandidate', () => {
     });
 
     // Moving to a party that already has a candidate here breaks @@unique([constituencyId, partyId]).
-    it.failing('rejects moving to a party that already has a candidate in the constituency', async () => {
+    it('rejects moving to a party that already has a candidate in the constituency', async () => {
       const { findCandidatesInConstituency, update } = givenCandidate7();
       findCandidatesInConstituency.mockResolvedValue([
         candidate7,

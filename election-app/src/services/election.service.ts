@@ -97,6 +97,12 @@ export class ElectionService {
       );
     }
 
+    // 1 พรรคส่งผู้สมัครได้ 1 คนต่อเขต (@@unique([constituencyId, partyId]) ใน schema)
+    const candidatesInConstituency = await candidateRepo.findByConstituency(data.constituencyId);
+    if (candidatesInConstituency.some((c) => c.partyId === data.partyId)) {
+      throw new Error("พรรคนี้มีผู้สมัครในเขตนี้แล้ว");
+    }
+
     return await candidateRepo.create({
       candidateNumber: data.candidateNumber,
       policy: data.policy || null,
@@ -648,6 +654,14 @@ export class ElectionService {
       const party = await partyRepo.findById(data.partyId);
       if (!party) {
         throw new Error(`ไม่พบพรรค ID: ${data.partyId}`);
+      }
+    }
+
+    // ย้ายพรรคได้ก็ต่อเมื่อพรรคใหม่ยังไม่มีผู้สมัครคนอื่นในเขตนี้
+    if (data.partyId && data.partyId !== candidate.partyId) {
+      const candidatesInConstituency = await candidateRepo.findByConstituency(candidate.constituencyId);
+      if (candidatesInConstituency.some((c) => c.id !== candidateId && c.partyId === data.partyId)) {
+        throw new Error("พรรคนี้มีผู้สมัครในเขตนี้แล้ว");
       }
     }
 

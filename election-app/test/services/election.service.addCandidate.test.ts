@@ -172,7 +172,7 @@ describe('ElectionService.addCandidate', () => {
       expect(create).not.toHaveBeenCalled();
     });
 
-    it.failing('rejects a party that already has a candidate in the constituency', async () => {
+    it('rejects a party that already has a candidate in the constituency', async () => {
       const { findCandidatesInConstituency, create } = givenEverythingIsAvailable();
       findCandidatesInConstituency.mockResolvedValue([aCandidate({ partyId: 10, candidateNumber: 5 })] as never);
 
