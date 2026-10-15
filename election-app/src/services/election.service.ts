@@ -665,7 +665,15 @@ export class ElectionService {
       }
     }
 
-    return await candidateRepo.update(candidateId, data);
+    // ชื่อและรูปเก็บอยู่ในตาราง User ไม่ใช่ Candidate — แยกส่งให้ถูกตาราง
+    const { title, firstName, lastName, imageUrl, ...candidateFields } = data;
+    const userFields = { title, firstName, lastName, imageUrl };
+    const hasUserFields = Object.values(userFields).some((value) => value !== undefined);
+
+    return await candidateRepo.update(candidateId, {
+      ...candidateFields,
+      ...(hasUserFields ? { user: userFields } : {}),
+    });
   };
 
   public deleteCandidate = async (candidateId: number) => {

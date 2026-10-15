@@ -93,10 +93,10 @@ describe('ElectionService.updateCandidate', () => {
     expect(update).not.toHaveBeenCalled();
   });
 
-  describe('bugs found by testing (it.failing = documents a bug in the original code)', () => {
+  describe('bugs found by testing (were it.failing on the original code, fixed since)', () => {
     // The original passes title/firstName/lastName/imageUrl straight to prisma.candidate.update,
     // but those columns live on User — Prisma answers "Unknown argument `title`".
-    it.failing("sends the person's name to the user record, not to the candidate row", async () => {
+    it("sends the person's name to the user record, not to the candidate row", async () => {
       const { update } = givenCandidate7();
 
       await service.updateCandidate(7, { title: 'นางสาว', firstName: 'สมศรี', lastName: 'มีสุข' });

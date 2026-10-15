@@ -161,7 +161,7 @@ describe('ElectionService.addCandidate', () => {
     );
   });
 
-  describe('bugs found by testing (it.failing = documents a bug in the original code)', () => {
+  describe('bugs found by testing (were it.failing on the original code, fixed since)', () => {
     it.each([-1, 1.5])('rejects candidate number %p (must be a positive integer)', async (candidateNumber) => {
       const { create } = givenEverythingIsAvailable();
 

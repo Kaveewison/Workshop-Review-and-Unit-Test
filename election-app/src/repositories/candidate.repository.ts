@@ -100,17 +100,26 @@ export const update = async (
   id: number,
   data: {
     candidateNumber?: number;
-    title?: string;
-    firstName?: string;
-    lastName?: string;
-    imageUrl?: string;
     policy?: string;
     partyId?: number;
+    // ข้อมูลส่วนตัวของผู้สมัครอยู่ในตาราง User — อัปเดตผ่าน relation
+    user?: {
+      title?: string;
+      firstName?: string;
+      lastName?: string;
+      imageUrl?: string;
+    };
   },
 ) => {
+  const { partyId, user, ...candidateFields } = data;
   return await prisma.candidate.update({
     where: { id },
-    data,
+    data: {
+      ...candidateFields,
+      // Prisma ไม่ให้ใช้ partyId (foreign key) ปนกับ relation user ในคำสั่งเดียว — จึงใช้ connect
+      ...(partyId !== undefined ? { party: { connect: { id: partyId } } } : {}),
+      ...(user ? { user: { update: user } } : {}),
+    },
     include: {
       user: true,
       party: true,
